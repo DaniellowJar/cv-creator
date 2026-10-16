@@ -258,20 +258,6 @@ textarea { resize: vertical; min-height: 120px; font-family: ui-monospace, SFMon
 /* --- Hidden --- */
 .hidden { display: none !important; }
 
-/* --- Animations --- */
-@keyframes confetti-burst {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(120vh) rotate(720deg) scale(0); opacity: 0; }
-}
-
-.confetti-piece {
-  position: absolute;
-  width: 8px; height: 8px;
-  pointer-events: none;
-  z-index: 9999;
-  animation: confetti-burst 1.2s ease-out forwards;
-}
-
 /* --- Responsive --- */
 @media (max-width: 900px) {
   .app-main { flex-direction: column; }

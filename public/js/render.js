@@ -123,12 +123,12 @@ const Render = (() => {
     return header;
   }
 
-  function buildPhoto(doc, getAssetUrl) {
+  function buildPhoto(doc, theme, getAssetUrl) {
     const b = doc.basics || {};
-    if (!b.photo || doc.theme.layout.photo === 'none') return null;
+    if (!b.photo || theme.layout.photo === 'none') return null;
 
     const photo = document.createElement('img');
-    photo.className = 'cv-photo ' + doc.theme.layout.photo + ' ' + (doc.theme.decor.photoShape || 'circle');
+    photo.className = 'cv-photo ' + theme.layout.photo + ' ' + (theme.decor.photoShape || 'circle');
     const url = getAssetUrl(b.photo);
     if (url) photo.src = url;
     else photo.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRTVFNzdFIi8+PC9zdmc+';
@@ -155,7 +155,7 @@ const Render = (() => {
 
     // Build header + photo once
     const header = buildHeader(doc);
-    const photo = buildPhoto(doc, getAssetUrl);
+    const photo = buildPhoto(doc, theme, getAssetUrl);
     if (photo) {
       if (theme.layout.photo === 'top') {
         // photo goes on its own line at top of page 1

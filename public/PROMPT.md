@@ -115,8 +115,8 @@ Output (JSON only):
 
 1. Paste the above into your agent, append your CV text and preferences.
 2. Copy the JSON the agent returns.
-3. Open the CV Creator, paste the JSON into the left box.
-4. Upload your photo (drag into the drop zone) if `basics.photo` references one.
-5. Tweak theme colors in the right panel if desired — they write back into the JSON.
+3. Open the CV Creator, paste the JSON into step 2.
+4. Add your photo in step 3 (drop it on the drop zone) if `basics.photo` references one.
+5. Want a different look? Ask the agent to change the theme in the JSON and paste it again — the app has no style settings of its own.
 6. Click **Export**. The browser print dialog opens. Choose "Save as PDF", margins None, background graphics on.
 7. Download your vector PDF. Done.

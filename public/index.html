@@ -15,124 +15,73 @@
 
 <div class="app">
 
-  <!-- Left panel: input flow -->
-  <aside class="app-panel">
-    <div class="panel-header">
-      <div class="app-brand">CV<span class="accent">Creator</span></div>
-      <div class="app-desc">JSON → PDF in your browser</div>
-    </div>
+  <!-- Row: left input panel + right live preview -->
+  <div class="app-main">
 
-    <!-- Step 1: Copy prompt + How it works -->
-    <div class="step">
-      <div class="step-title">1 · Start</div>
-      <div class="btn-row">
-        <button id="copy-prompt-btn" class="btn btn-ghost">Copy prompt</button>
-        <a href="how.html" class="btn btn-ghost">How does it work?</a>
+    <aside class="app-panel">
+      <div class="panel-header">
+        <div class="app-brand">CV<span class="accent">Creator</span></div>
+        <div class="app-desc">JSON → PDF in your browser</div>
       </div>
-      <p class="step-hint">Paste this into any agent with your CV text, then paste the JSON back here.</p>
-    </div>
 
-    <!-- Step 2: Paste JSON -->
-    <div class="step">
-      <div class="step-title">2 · Paste CV JSON</div>
-      <div class="json-editor">
-        <textarea id="json-input" placeholder="Paste your agent-generated CV JSON here…"></textarea>
+      <!-- 1 · Copy -->
+      <div class="step">
+        <div class="step-title">1 · Copy the prompt</div>
+        <button id="copy-prompt-btn" class="btn btn-primary btn-block">Copy prompt</button>
+        <p class="step-hint">Paste it into any AI chat together with your CV text.
+          <a href="how.html" class="how-link">How does it work?</a></p>
       </div>
-      <div id="validation" class="validation" style="min-height:1.2em;"></div>
-      <div class="editor-actions">
-        <button id="copy-json-btn" class="btn btn-ghost btn-sm">Copy JSON</button>
-        <button id="clear-btn" class="btn btn-ghost btn-sm">Clear all</button>
-      </div>
-    </div>
 
-    <!-- Step 3: Upload assets -->
-    <div class="step">
-      <div class="step-title">3 · Upload assets</div>
-      <div id="drop-zone" class="drop-zone">
-        <p>Drop photo / files here</p>
-        <small>JPG / PNG — stays in this browser only</small>
-        <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
+      <!-- 2 · Paste -->
+      <div class="step">
+        <div class="step-title">2 · Paste the JSON</div>
+        <div class="json-editor">
+          <textarea id="json-input" placeholder="Paste the JSON your AI gives you back…"></textarea>
+        </div>
+        <div id="status" class="validation" role="status" aria-live="polite"></div>
+        <div class="editor-actions">
+          <button id="clear-btn" class="btn btn-ghost btn-sm">Clear</button>
+        </div>
       </div>
-      <div id="missing-files" class="error-list" style="display:none;"></div>
-      <div id="asset-list" class="asset-list"></div>
-    </div>
 
-    <!-- Step 4: Theme tweaks (collapsed by default) -->
-    <div class="step">
-      <div class="step-title">4 · Theme tweaks</div>
-      <div class="color-pick" style="margin-bottom:0.5rem;">
-        <label>Accent 1 (lime)</label>
-        <input id="theme-accent" type="color" value="#B4F204">
-        <label>Accent 2 (sun)</label>
-        <input id="theme-accent2" type="color" value="#FFD60A">
+      <!-- 3 · Photo -->
+      <div class="step">
+        <div class="step-title">3 · Add your photo</div>
+        <div id="drop-zone" class="drop-zone">
+          <p>Drop your photo here</p>
+          <small>JPG / PNG — stays in this browser only</small>
+          <input type="file" id="file-input" accept="image/*,application/pdf" multiple style="display:none;">
+        </div>
+        <div id="asset-status" class="asset-status" role="status" aria-live="polite"></div>
+        <div id="asset-list" class="asset-list"></div>
       </div>
-      <div class="color-pick" style="margin-bottom:0.5rem;">
-        <label>Text</label>
-        <input id="theme-text" type="color" value="#1F2937">
-        <label>Muted</label>
-        <input id="theme-muted" type="color" value="#6B7280">
-      </div>
-      <div class="color-pick" style="margin-bottom:0.5rem;">
-        <label>Panel</label>
-        <input id="theme-panel" type="color" value="#FFFFFF">
-        <label>Rule</label>
-        <input id="theme-rule" type="color" value="#E5E7EB">
-      </div>
-      <div class="color-pick" style="margin-bottom:0.5rem;">
-        <label>Page</label>
-        <input id="theme-page" type="color" value="#FAFAF7">
-      </div>
-      <label>Photo position</label>
-      <div class="photo-options">
-        <button id="photo-left" class="photo-btn active">Left</button>
-        <button id="photo-right" class="photo-btn">Right</button>
-        <button id="photo-top" class="photo-btn">Top</button>
-        <button id="photo-none" class="photo-btn">None</button>
-      </div>
-      <label style="margin-top:0.4rem;">Density</label>
-      <select id="density-select" class="density-select">
-        <option value="normal">Normal</option>
-        <option value="compact">Compact</option>
-        <option value="airy">Airy</option>
-      </select>
-      <label style="margin-top:0.4rem;">Font size (pt)</label>
-      <input id="font-size-input" type="number" value="10.2" min="8" max="13" step="0.1" style="width:80px;">
-    </div>
 
-    <!-- Step 5: Export -->
-    <div class="step export-step">
-      <div class="step-title">5 · Export</div>
-      <button id="export-btn" class="btn btn-primary btn-lg">Export → PDF</button>
-      <p class="step-hint">Opens your print dialog. Choose “Save as PDF”, margins None, background graphics on.</p>
-    </div>
-
-    <div class="panel-footer">
-      Examples:
-      <div id="example-chips" class="example-chips">
-        <button class="example-chip" data-example="cv-sidebar-lime">Sidebar · Lime</button>
-        <button class="example-chip" data-example="cv-serif-dark">Serif · Dark titles</button>
-        <button class="example-chip" data-example="cv-ats-dense">ATS · Dense</button>
+      <!-- 4 · Export -->
+      <div class="step export-step">
+        <div class="step-title">4 · Export</div>
+        <button id="export-btn" class="btn btn-primary btn-lg">Export → PDF</button>
+        <p class="step-hint">Opens your print dialog. Choose “Save as PDF”, margins None, background graphics on.</p>
       </div>
-      <p class="step-hint" style="margin-top:0.5rem;">Draft autosaves in this browser.</p>
-    </div>
-  </aside>
 
-  <!-- Right panel: live preview -->
-  <section class="app-preview">
-    <div class="preview-header">
-      <span class="preview-label">Live preview</span>
-      <div class="preview-zoom">
-        <label>Zoom</label>
-        <input id="zoom-input" type="range" min="0.4" max="1.4" step="0.1" value="1">
+      <div class="panel-footer">
+        <p class="step-hint">Draft autosaves in this browser.</p>
       </div>
-    </div>
-    <div id="preview-canvas" class="preview-canvas"></div>
-  </section>
+    </aside>
+
+    <section class="app-preview">
+      <div class="preview-header">
+        <span class="preview-label">Live preview</span>
+      </div>
+      <div id="preview-canvas" class="preview-canvas"></div>
+    </section>
+
+  </div>
 
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-left">
       Created by <strong>Daniel T.</strong> for free use.
+      <a href="how.html">How it works</a>
       <a href="tos.html">ToS</a>
       <a href="privacy.html">Privacy</a>
     </div>
@@ -147,7 +96,6 @@
 <script src="js/assets.js"></script>
 <script src="js/sections.js"></script>
 <script src="js/render.js"></script>
-<script src="js/confetti.js"></script>
 <script src="js/app.js"></script>
 
 </body>

@@ -14,6 +14,7 @@ const Sections = (() => {
   };
 
   function setLabels(labels) {
+    if (!labels) return;
     if (labels.present) LABELS.present = labels.present;
     if (labels.titles) Object.assign(LABELS.titles, labels.titles);
   }
@@ -171,9 +172,9 @@ const Sections = (() => {
     const title = el('h2', 'cv-section-title', escapeHtml(sec.title || LABELS.titles[sec.kind] || sec.kind));
 
     const ds = theme.decor || {};
-    if (ds.sectionStyle === 'rule') section.querySelector?.('h2')?.classList.add('rule-style');
-    else if (ds.sectionStyle === 'bar') section.querySelector?.('h2')?.classList.add('bar-style');
-    else if (ds.sectionStyle === 'none') section.querySelector?.('h2')?.classList.add('none-style');
+    if (ds.sectionStyle === 'rule') title.classList.add('rule-style');
+    else if (ds.sectionStyle === 'bar') title.classList.add('bar-style');
+    else if (ds.sectionStyle === 'none') title.classList.add('none-style');
 
     section.appendChild(title);
 

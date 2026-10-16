@@ -1,29 +1,34 @@
 /* ==========================================================================
    CV Creator — assets.js
-   File drop zone + photo asset management. Produces object URLs that live
-   only in the current browser session — nothing is uploaded anywhere.
+   Photo/file drop zone. Produces object URLs that live only in the current
+   browser session — nothing is uploaded anywhere.
+
+   Matching: a JSON reference like "assets/me.jpg" matches an uploaded file by
+   basename, case-insensitively ("me.jpg", "ME.JPG", "assets/me.jpg" all match).
    ========================================================================== */
 
 const Assets = (() => {
   const files = new Map(); // name -> { file, url, kind }
+  let used = new Set();    // normalized names currently referenced by the CV
+  let onChange = () => {};
 
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
   const assetList = document.getElementById('asset-list');
-  const onChange = () => {};
+
+  function basename(p) { return String(p).replace(/\\/g, '/').split('/').pop(); }
+  function normalize(p) { return basename(p).trim().toLowerCase(); }
 
   function init(opts) {
-    Object.assign(onChange, opts.onChange);
+    if (opts && typeof opts.onChange === 'function') onChange = opts.onChange;
 
-    // Click to browse
     dropZone.addEventListener('click', () => fileInput.click());
 
-    // File input change
     fileInput.addEventListener('change', (e) => {
       handleFiles(Array.from(e.target.files));
+      fileInput.value = ''; // allow re-selecting the same file
     });
 
-    // Drag over
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-over');
@@ -39,13 +44,22 @@ const Assets = (() => {
   }
 
   function handleFiles(fileList) {
+    let added = 0;
     for (const file of fileList) {
       if (!file.type.startsWith('image/') && !file.type.startsWith('application/pdf')) continue;
-      const url = URL.createObjectURL(file);
-      files.set(file.name, { file, url, kind: file.type.startsWith('image/') ? 'image' : 'file' });
+      const existing = files.get(file.name);
+      if (existing) URL.revokeObjectURL(existing.url);
+      files.set(file.name, {
+        file,
+        url: URL.createObjectURL(file),
+        kind: file.type.startsWith('image/') ? 'image' : 'file'
+      });
+      added++;
     }
-    renderList();
-    if (onChange) onChange(getAll());
+    if (added) {
+      renderList();
+      onChange(getAll());
+    }
   }
 
   function remove(name) {
@@ -55,39 +69,53 @@ const Assets = (() => {
       files.delete(name);
     }
     renderList();
-    if (onChange) onChange(getAll());
+    onChange(getAll());
   }
 
-  function getUrl(name) { return files.has(name) ? files.get(name).url : null; }
-  function getAll() { return Object.fromEntries([...files.entries()].map(([k, v]) => [k, v.url])); }
   function clear() {
-    for (const [, v] of files) URL.revokeObjectURL(v.url);
+    for (const [, entry] of files) URL.revokeObjectURL(entry.url);
     files.clear();
     renderList();
-    if (onChange) onChange({});
+    onChange({});
+  }
+
+  function getAll() {
+    return Object.fromEntries([...files.entries()].map(([k, v]) => [k, v.url]));
+  }
+
+  // Mark which uploaded files are actually referenced by the current CV.
+  function markUsed(refs) {
+    used = new Set((refs || []).map(normalize));
+    renderList();
   }
 
   function renderList() {
     if (!assetList) return;
     assetList.innerHTML = '';
-    if (files.size === 0) {
-      assetList.innerHTML = '<p style="font-size:0.75rem;color:var(--app-muted);text-align:center;padding:1rem;">No files yet</p>';
-      return;
-    }
     for (const [name, entry] of files) {
+      const isUsed = used.has(normalize(name));
       const div = document.createElement('div');
-      div.className = 'asset-item';
+      div.className = 'asset-item' + (isUsed ? ' matched' : '');
+      const thumb = entry.kind === 'image'
+        ? `<img src="${entry.url}" alt="">`
+        : `<div class="asset-file-icon">PDF</div>`;
       div.innerHTML = `
-        ${entry.kind === 'image' ? `<img src="${entry.url}" alt="">` : `<div style="width:28px;height:28px;border-radius:4px;background:#E5E7EB;display:flex;align-items:center;justify-content:center;font-size:10px;color:#6B7280;">📄</div>`}
+        ${thumb}
         <div class="asset-name" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+        ${isUsed ? '<span class="asset-badge">used as photo</span>' : ''}
         <button class="asset-remove" aria-label="Remove ${escapeHtml(name)}" data-name="${escapeHtml(name)}">×</button>
       `;
-      div.querySelector('.asset-remove').addEventListener('click', () => remove(name));
+      div.querySelector('.asset-remove').addEventListener('click', (e) => {
+        e.stopPropagation();
+        remove(name);
+      });
       assetList.appendChild(div);
     }
   }
 
-  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" })[c]); }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" })[c]);
+  }
 
-  return { init, getUrl, getAll, clear, remove };
+  return { init, getAll, clear, remove, markUsed, normalize, basename };
 })();

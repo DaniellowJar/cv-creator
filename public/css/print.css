@@ -13,13 +13,14 @@
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
   /* Hide app chrome */
-  .app-header, .app-sidebar, .app-footer, .preview-zoom, .no-print, .app-panel {
+  .app-header, .app-panel, .app-footer, .preview-header, .no-print {
     display: none !important;
   }
 
-  .app-main { overflow: visible; height: auto; }
+  .app { height: auto; overflow: visible; }
+  .app-main { display: block; overflow: visible; flex: none; }
   .app-preview { padding: 0; background: #FFFFFF; overflow: visible; }
-  .preview-header { display: none !important; }
+  .preview-canvas { padding: 0; display: block; }
 
   /* Sheets become real pages */
   .cv-sheet {

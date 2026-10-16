@@ -10,8 +10,8 @@ The power lives entirely in the JSON contract (`cv.schema.json`). Any LLM agent 
 
 1. Copy `PROMPT.md` into any LLM agent, give it your CV text + preferences.
 2. Paste the returned JSON into the creator.
-3. Upload your photo (if referenced).
-4. Preview live, tweak theme colors if desired.
+3. Add your photo (if referenced).
+4. Preview live on the right. The look comes entirely from the JSON — no style settings in the app.
 5. Click **Export** → print dialog → "Save as PDF" (margins None, background graphics on).
 
 ## Local preview
