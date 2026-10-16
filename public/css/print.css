@@ -13,12 +13,13 @@
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
   /* Hide app chrome */
-  .app-header, .app-sidebar, .app-footer, .preview-zoom, .no-print {
+  .app-header, .app-sidebar, .app-footer, .preview-zoom, .no-print, .app-panel {
     display: none !important;
   }
 
   .app-main { overflow: visible; height: auto; }
   .app-preview { padding: 0; background: #FFFFFF; overflow: visible; }
+  .preview-header { display: none !important; }
 
   /* Sheets become real pages */
   .cv-sheet {
@@ -34,6 +35,7 @@
   }
   .cv-sheet:last-child { page-break-after: auto; }
   .cv-sheet::after { display: none; }
+  .cv-sheet.letter { min-height: 279.4mm; }
 
   /* Ensure background colors print */
   .cv-sheet { background: var(--cv-page) !important; }
@@ -42,10 +44,13 @@
   /* Prevent breaking inside items/sections */
   .cv-section, .cv-item { break-inside: avoid; page-break-inside: avoid; }
 
+  /* Page numbers print at bottom */
+  .cv-page-number { display: block; }
+
   /* Remove link underlines but keep URLs subtle */
   a[href] { text-decoration: none; color: inherit; }
 
-  /* Force fonts to render (no fallback flicker) */
+  /* Force fonts to render */
   body { font-family: var(--cv-font-body); }
 }
 
