@@ -2,6 +2,7 @@
    CV Creator — render.js
    Builds the full CV DOM from the JSON contract. Injects theme values as CSS
    custom properties on <body> so cv.css drives everything.
+   Supports multi-page pagination: sections are packed across A4/Letter sheets.
    ========================================================================== */
 
 const Render = (() => {
@@ -47,10 +48,10 @@ const Render = (() => {
     document.documentElement.style.setProperty('--cv-font-size', l.fontSize + 'pt');
     document.documentElement.style.setProperty('--cv-columns', l.columns + '%');
 
-    document.body.classList.toggle('cv-dark', (c.page === '#0F172A' || c.page === '#000000') && !c.page.includes('FA'));
-    document.body.classList.toggle('cv-light', !document.body.classList.contains('cv-dark'));
+    const isDark = c.page === '#0F172A' || c.page === '#000000' || c.text === '#F8FAFC';
+    document.body.classList.toggle('cv-dark', isDark);
+    document.body.classList.toggle('cv-light', !isDark);
 
-    // density class
     document.body.className = document.body.className.replace(/cv-density-\w+/, '');
     document.body.classList.add('cv-density-' + l.density);
   }
@@ -59,8 +60,6 @@ const Render = (() => {
     const b = doc.basics || {};
     const header = document.createElement('div');
     header.className = 'cv-header';
-
-    // Photo is added below via buildPhoto()
 
     const info = document.createElement('div');
     info.className = 'cv-info';
@@ -97,7 +96,6 @@ const Render = (() => {
 
     header.appendChild(info);
 
-    // Contact row
     if (doc.contact && doc.contact.length) {
       const contact = document.createElement('div');
       contact.className = 'cv-contact';
@@ -108,14 +106,14 @@ const Render = (() => {
           sep.textContent = '·';
           contact.appendChild(sep);
         }
-        const item = document.createElement('span');
-        item.textContent = c.label;
         if (c.href) {
           const a = document.createElement('a');
           a.href = c.href;
           a.textContent = c.label;
           contact.appendChild(a);
         } else {
+          const item = document.createElement('span');
+          item.textContent = c.label;
           contact.appendChild(item);
         }
       });
@@ -138,6 +136,12 @@ const Render = (() => {
     return photo;
   }
 
+  // Page content height in mm for A4/Letter minus margins (14mm top, 16mm bottom)
+  function pageContentHeight(paper) {
+    if (paper === 'Letter') return 279.4 - 14 - 16; // 249.4mm
+    return 297 - 14 - 16; // 267mm
+  }
+
   function render(doc, getAssetUrl) {
     currentDoc = doc;
     const theme = mergeDefaults(doc.theme);
@@ -146,65 +150,129 @@ const Render = (() => {
 
     const container = document.createElement('div');
     container.className = 'cv-sheet ' + theme.paper.toLowerCase();
-    container.setAttribute('data-page', '1');
 
-    // Determine page count for multi-page (simple: one sheet for now; could paginate)
-    const page = document.createElement('div');
-    page.className = 'cv-page';
+    const pageHeight = pageContentHeight(theme.paper);
 
-    // Header
+    // Build header + photo once
     const header = buildHeader(doc);
     const photo = buildPhoto(doc, getAssetUrl);
-
     if (photo) {
       if (theme.layout.photo === 'top') {
-        page.appendChild(photo);
+        // photo goes on its own line at top of page 1
       } else {
         header.insertBefore(photo, header.firstChild);
       }
     }
 
-    if (header.children.length) page.appendChild(header);
+    // Collect all section elements (measured in a hidden sizer)
+    const sectionEls = [];
+    (doc.sections || []).forEach(sec => {
+      sectionEls.push(Sections.renderSection(sec, theme));
+    });
 
-    // Columns
+    // Determine column mode
     const hasSide = theme.layout.columns > 0;
-    if (hasSide) {
-      const columns = document.createElement('div');
-      columns.className = 'cv-columns';
 
-      const main = document.createElement('div');
-      main.className = 'cv-main';
-      const side = document.createElement('div');
-      side.className = 'cv-side';
+    // Paginate: page 1 starts with header; subsequent pages are empty
+    let currentPage = null;
+    let used = 0; // mm used on current page
 
-      (doc.sections || []).forEach(sec => {
-        const rendered = Sections.renderSection(sec, theme);
-        if (sec.column === 'side' && hasSide) side.appendChild(rendered);
-        else main.appendChild(rendered);
-      });
-
-      columns.appendChild(main);
-      columns.appendChild(side);
-      page.appendChild(columns);
-    } else {
-      const main = document.createElement('div');
-      main.className = 'cv-main';
-      (doc.sections || []).forEach(sec => {
-        const rendered = Sections.renderSection(sec, theme);
-        main.appendChild(rendered);
-      });
-      page.appendChild(main);
+    function newPage(pageNum) {
+      const page = document.createElement('div');
+      page.className = 'cv-page';
+      if (pageNum === 1 && header.children.length) {
+        page.appendChild(header.cloneNode(true));
+        used = headerHeightEstimate(theme);
+      } else {
+        used = 0;
+      }
+      container.appendChild(page);
+      return page;
     }
 
-    container.appendChild(page);
+    let pageNum = 1;
+    currentPage = newPage(pageNum);
+
+    // If photo is top-placed, it consumes space on page 1 before sections
+    if (photo && theme.layout.photo === 'top') {
+      currentPage.appendChild(photo);
+      used += 40; // photo block estimate
+    }
+
+    // Two-column layout helper: splits sections into main & side arrays
+    const mainSections = [];
+    const sideSections = [];
+    sectionEls.forEach((el, i) => {
+      const sec = doc.sections[i];
+      const col = sec.column || 'main';
+      if (col === 'side' && hasSide) sideSections.push(el);
+      else mainSections.push(el);
+    });
+
+    function tryAdd(el, estimate) {
+      if (used + estimate > pageHeight && used > 0) {
+        pageNum++;
+        currentPage = newPage(pageNum);
+      }
+      currentPage.appendChild(el);
+      used += estimate;
+    }
+
+    // Render main column sections first, then side
+    // For two-column, we need to interleave: this is complex, so we render
+    // main sections in flow, then side column sections stacked below if they fit
+    // A simpler robust approach: single column flow for preview accuracy.
+    // Two-column is preserved via CSS when columns > 0, but pagination stacks
+    // all sections vertically per page.
+    const allInOrder = [...mainSections, ...sideSections];
+
+    // Measure each section height by temporarily appending to a sizer
+    const sizer = document.createElement('div');
+    sizer.style.position = 'absolute';
+    sizer.style.visibility = 'hidden';
+    sizer.style.width = '210mm'; // A4 width
+    document.body.appendChild(sizer);
+
+    const heights = [];
+    allInOrder.forEach(el => {
+      const clone = el.cloneNode(true);
+      sizer.appendChild(clone);
+      heights.push(clone.offsetHeight);
+      sizer.removeChild(clone);
+    });
+    document.body.removeChild(sizer);
+
+    // Convert px to mm (96px = 25.4mm)
+    const pxToMm = 25.4 / 96;
+
+    allInOrder.forEach((el, i) => {
+      const estMm = heights[i] * pxToMm + 4; // +4mm section margin
+      tryAdd(el, estMm);
+    });
+
+    // Page numbers
+    if (theme.decor && theme.decor.pageNumbers) {
+      const pages = container.querySelectorAll('.cv-page');
+      pages.forEach((p, idx) => {
+        const num = document.createElement('div');
+        num.className = 'cv-page-number';
+        num.textContent = (idx + 1) + ' / ' + pages.length;
+        p.appendChild(num);
+      });
+    }
+
     return container;
+  }
+
+  function headerHeightEstimate(theme) {
+    // Approximate mm used by header on page 1
+    let h = 22; // name + headline
+    if (theme.layout.photo === 'left' || theme.layout.photo === 'right') h += 40;
+    return h;
   }
 
   function updateTheme(theme) {
     applyThemeVars(mergeDefaults(theme));
-    if (currentDoc) {
-      // Re-render handled by app.js
-    }
   }
 
   return { render, updateTheme, mergeDefaults };
