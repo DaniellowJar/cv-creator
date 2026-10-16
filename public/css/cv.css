@@ -6,7 +6,6 @@
 
 .cv-sheet {
   width: 210mm;            /* A4 width */
-  height: 297mm;           /* A4 height */
   margin: 0 auto;
   background: var(--cv-page);
   color: var(--cv-text);
@@ -15,30 +14,53 @@
   position: relative;
   overflow: hidden;
   page-break-after: always;
+  min-height: 297mm;
 }
 .cv-sheet.letter {
   width: 215.9mm;
-  height: 279.4mm;
+  min-height: 279.4mm;
 }
 .cv-sheet:last-child { page-break-after: auto; }
-
-/* Hide chrome when previewing but keep printable */
-.cv-sheet::after {
-  content: attr(data-page);
-  position: absolute;
-  bottom: 8mm;
-  right: 10mm;
-  font-size: 7pt;
-  color: var(--cv-muted);
-  opacity: var(--cv-page-numbers);
-}
 
 /* Page wrapper inside sheet */
 .cv-page {
   padding: 14mm 10mm 16mm 10mm;
-  height: 100%;
+  min-height: 267mm;       /* A4 content height */
   position: relative;
+  page-break-after: always;
 }
+.cv-page:last-child { page-break-after: auto; }
+.cv-page.letter { min-height: 249.4mm; }
+
+.cv-page-number {
+  position: absolute;
+  bottom: 4mm;
+  right: 10mm;
+  font-size: 7pt;
+  color: var(--cv-muted);
+}
+
+/* Preview-specific tweaks */
+.preview-mode .cv-sheet {
+  width: 100%;
+  max-width: 210mm;
+  height: auto;
+  min-height: auto;
+  margin: 0 auto 1rem auto;
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--app-shadow);
+  page-break-after: avoid;
+}
+.preview-mode .cv-sheet.letter { max-width: 215.9mm; }
+.preview-mode .cv-page {
+  page-break-after: avoid;
+  border-bottom: 1px solid var(--cv-rule);
+  margin-bottom: 0.5rem;
+}
+.preview-mode .cv-page:last-child { border-bottom: none; margin-bottom: 0; }
+.preview-mode .cv-page-number { display: none; }
 
 /* Header block */
 .cv-header {
