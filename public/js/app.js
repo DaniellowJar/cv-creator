@@ -4,13 +4,17 @@
    ========================================================================== */
 
 const APP_ID = 'cv-creator-draft';
+const PROMPT_FILE = 'PROMPT.md';
 
 const els = {
   jsonInput: document.getElementById('json-input'),
   validation: document.getElementById('validation'),
+  missingFiles: document.getElementById('missing-files'),
   previewCanvas: document.getElementById('preview-canvas'),
   exportBtn: document.getElementById('export-btn'),
   clearBtn: document.getElementById('clear-btn'),
+  copyPromptBtn: document.getElementById('copy-prompt-btn'),
+  copyJsonBtn: document.getElementById('copy-json-btn'),
   exampleChips: document.getElementById('example-chips'),
   themeAccent: document.getElementById('theme-accent'),
   themeAccent2: document.getElementById('theme-accent2'),
@@ -26,12 +30,11 @@ const els = {
   densitySelect: document.getElementById('density-select'),
   fontSizeInput: document.getElementById('font-size-input'),
   zoomInput: document.getElementById('zoom-input'),
-  darkToggle: document.getElementById('dark-toggle'),
-  copyJsonBtn: document.getElementById('copy-json'),
+  copyJsonBtn: document.getElementById('copy-json-btn'),
 };
 
 let currentDoc = null;
-let currentAssets = {};
+let currentAssets = {}; // name -> object URL
 let previewScale = 1;
 let autosaveTimer = null;
 
@@ -39,6 +42,19 @@ let autosaveTimer = null;
 document.addEventListener('DOMContentLoaded', () => {
   Assets.init({ onChange: (assets) => { currentAssets = assets; scheduleRender(); } });
   Confetti.init();
+
+  // Copy prompt
+  els.copyPromptBtn.addEventListener('click', async () => {
+    try {
+      const text = await fetchPrompt();
+      await navigator.clipboard.writeText(text);
+      const old = els.copyPromptBtn.textContent;
+      els.copyPromptBtn.textContent = 'Copied!';
+      setTimeout(() => els.copyPromptBtn.textContent = old, 1200);
+    } catch (e) {
+      showValidation('bad', 'Could not load prompt kit.');
+    }
+  });
 
   // JSON input
   els.jsonInput.addEventListener('input', (e) => {
@@ -54,9 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
     scheduleAutosave(raw);
   });
 
-  // Export
+  // Export — blocked if referenced assets are missing
   els.exportBtn.addEventListener('click', () => {
     if (!currentDoc) return;
+    const missing = missingAssets(currentDoc, currentAssets);
+    if (missing.length) {
+      renderMissingErrors(missing);
+      showValidation('bad', missing.length + ' referenced file(s) missing. Upload them before exporting.');
+      return;
+    }
+    hideMissingErrors();
     Confetti.burst(window.innerWidth / 2, 100);
     setTimeout(() => {
       window.print();
@@ -72,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Assets.clear();
     clearPreview();
     showValidation('', '');
+    hideMissingErrors();
     localStorage.removeItem(APP_ID);
   });
 
@@ -99,9 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
   els.photoNone.addEventListener('click', () => setPhoto('none'));
   els.densitySelect.addEventListener('change', updateThemeFromUI);
   els.fontSizeInput.addEventListener('input', updateThemeFromUI);
-  els.darkToggle.addEventListener('change', (e) => {
-    document.body.classList.toggle('app-dark', e.target.checked);
-  });
   els.zoomInput.addEventListener('input', (e) => {
     previewScale = parseFloat(e.target.value);
     els.previewCanvas.style.transform = `scale(${previewScale})`;
@@ -126,14 +147,27 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// --- Fetch PROMPT.md ---
+async function fetchPrompt() {
+  const r = await fetch(PROMPT_FILE);
+  if (!r.ok) throw new Error('prompt not found');
+  return r.text();
+}
+
 // --- Validate + render ---
 function validateAndRender() {
   const result = CVValidator.validate(currentDoc);
   if (result.valid) {
     showValidation('ok', 'Valid CV JSON — ' + (currentDoc.sections || []).length + ' sections');
+    const missing = missingAssets(currentDoc, currentAssets);
+    renderMissingErrors(missing);
+    if (missing.length) {
+      showValidation('bad', missing.length + ' referenced file(s) missing: ' + missing.join(', '));
+    }
     doRender();
   } else {
     showValidation('bad', CVValidator.formatForAgent(result.errors));
+    hideMissingErrors();
     clearPreview();
   }
 }
@@ -162,6 +196,36 @@ function clearPreview() {
   els.previewCanvas.innerHTML = '';
   els.previewCanvas.className = 'preview-canvas';
 }
+
+// --- Missing asset detection ---
+function missingAssets(doc, assets) {
+  const missing = [];
+    const referenced = [];
+  // basics.photo
+  if (doc.basics && doc.basics.photo) referenced.push(doc.basics.photo);
+  // any item color? no, color is hex not file
+  // walk sections for any photo-like string fields? keep simple: basics.photo only for now
+  referenced.forEach(name => {
+    if (!assets[name]) missing.push(name);
+  });
+  return missing;
+}
+
+function renderMissingErrors(missing) {
+  if (!els.missingFiles) return;
+  els.missingFiles.style.display = 'block';
+  els.missingFiles.innerHTML = missing.map(name =>
+    `<div class="error-item"><span class="error-icon">⚠</span><div><strong>File "${escapeHtml(name)}" is missing.</strong> Upload it in the assets step above.</div></div>`
+  ).join('');
+}
+
+function hideMissingErrors() {
+  if (!els.missingFiles) return;
+  els.missingFiles.style.display = 'none';
+  els.missingFiles.innerHTML = '';
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" })[c]); }
 
 // --- Theme UI ---
 function updateThemeFromUI() {
