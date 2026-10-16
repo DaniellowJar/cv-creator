@@ -15,109 +15,119 @@
 
 <div class="app">
 
-  <!-- Header -->
-  <header class="app-header">
-    <div class="header-left">
+  <!-- Left panel: input flow -->
+  <aside class="app-panel">
+    <div class="panel-header">
       <div class="app-brand">CV<span class="accent">Creator</span></div>
       <div class="app-desc">JSON → PDF in your browser</div>
     </div>
-    <div class="header-center">
-      <a href="how.html" class="btn btn-ghost btn-sm">How it works</a>
-      <button id="dark-toggle" class="btn btn-ghost btn-sm">Dark theme</button>
-    </div>
-    <div class="header-right">
-      <a href="https://danieltuma.work" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">← danieltuma.work</a>
-      <button id="export-btn" class="btn btn-primary">Export → PDF</button>
-    </div>
-  </header>
 
-  <div class="app-main">
-    <!-- Sidebar: input + controls -->
-    <aside class="app-sidebar">
-      <div class="section-title">1 · Paste CV JSON</div>
+    <!-- Step 1: Copy prompt + How it works -->
+    <div class="step">
+      <div class="step-title">1 · Start</div>
+      <div class="btn-row">
+        <button id="copy-prompt-btn" class="btn btn-ghost">Copy prompt</button>
+        <a href="how.html" class="btn btn-ghost">How does it work?</a>
+      </div>
+      <p class="step-hint">Paste this into any agent with your CV text, then paste the JSON back here.</p>
+    </div>
+
+    <!-- Step 2: Paste JSON -->
+    <div class="step">
+      <div class="step-title">2 · Paste CV JSON</div>
       <div class="json-editor">
         <textarea id="json-input" placeholder="Paste your agent-generated CV JSON here…"></textarea>
       </div>
       <div id="validation" class="validation" style="min-height:1.2em;"></div>
-
       <div class="editor-actions">
-        <button id="copy-json" class="btn btn-ghost btn-sm">Copy JSON</button>
+        <button id="copy-json-btn" class="btn btn-ghost btn-sm">Copy JSON</button>
         <button id="clear-btn" class="btn btn-ghost btn-sm">Clear all</button>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="section-title" style="margin-bottom:0.6rem;">2 · Upload assets</div>
-        <div id="drop-zone" class="drop-zone">
-          <p>Drop photo here</p>
-          <small>JPG / PNG — stays in this browser only</small>
-          <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
-        </div>
-        <div id="asset-list" class="asset-list"></div>
+    <!-- Step 3: Upload assets -->
+    <div class="step">
+      <div class="step-title">3 · Upload assets</div>
+      <div id="drop-zone" class="drop-zone">
+        <p>Drop photo / files here</p>
+        <small>JPG / PNG — stays in this browser only</small>
+        <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
       </div>
+      <div id="missing-files" class="error-list" style="display:none;"></div>
+      <div id="asset-list" class="asset-list"></div>
+    </div>
 
-      <div class="card">
-        <div class="section-title" style="margin-bottom:0.6rem;">3 · Quick theme tweaks</div>
-        <div class="color-pick" style="margin-bottom:0.5rem;">
-          <label>Accent 1 (lime)</label>
-          <input id="theme-accent" type="color" value="#B4F204">
-          <label>Accent 2 (sun)</label>
-          <input id="theme-accent2" type="color" value="#FFD60A">
-        </div>
-        <div class="color-pick" style="margin-bottom:0.5rem;">
-          <label>Text</label>
-          <input id="theme-text" type="color" value="#1F2937">
-          <label>Muted</label>
-          <input id="theme-muted" type="color" value="#6B7280">
-        </div>
-        <div class="color-pick" style="margin-bottom:0.5rem;">
-          <label>Panel</label>
-          <input id="theme-panel" type="color" value="#FFFFFF">
-          <label>Rule</label>
-          <input id="theme-rule" type="color" value="#E5E7EB">
-        </div>
-        <div class="color-pick" style="margin-bottom:0.5rem;">
-          <label>Page</label>
-          <input id="theme-page" type="color" value="#FAFAF7">
-        </div>
-        <label>Photo position</label>
-        <div class="photo-options">
-          <button id="photo-left" class="photo-btn active">Left</button>
-          <button id="photo-right" class="photo-btn">Right</button>
-          <button id="photo-top" class="photo-btn">Top</button>
-          <button id="photo-none" class="photo-btn">None</button>
-        </div>
-        <label style="margin-top:0.4rem;">Density</label>
-        <select id="density-select" class="density-select">
-          <option value="normal">Normal</option>
-          <option value="compact">Compact</option>
-          <option value="airy">Airy</option>
-        </select>
-        <label style="margin-top:0.4rem;">Font size (pt)</label>
-        <input id="font-size-input" type="number" value="10.2" min="8" max="13" step="0.1" style="width:80px;">
+    <!-- Step 4: Theme tweaks (collapsed by default) -->
+    <div class="step">
+      <div class="step-title">4 · Theme tweaks</div>
+      <div class="color-pick" style="margin-bottom:0.5rem;">
+        <label>Accent 1 (lime)</label>
+        <input id="theme-accent" type="color" value="#B4F204">
+        <label>Accent 2 (sun)</label>
+        <input id="theme-accent2" type="color" value="#FFD60A">
       </div>
+      <div class="color-pick" style="margin-bottom:0.5rem;">
+        <label>Text</label>
+        <input id="theme-text" type="color" value="#1F2937">
+        <label>Muted</label>
+        <input id="theme-muted" type="color" value="#6B7280">
+      </div>
+      <div class="color-pick" style="margin-bottom:0.5rem;">
+        <label>Panel</label>
+        <input id="theme-panel" type="color" value="#FFFFFF">
+        <label>Rule</label>
+        <input id="theme-rule" type="color" value="#E5E7EB">
+      </div>
+      <div class="color-pick" style="margin-bottom:0.5rem;">
+        <label>Page</label>
+        <input id="theme-page" type="color" value="#FAFAF7">
+      </div>
+      <label>Photo position</label>
+      <div class="photo-options">
+        <button id="photo-left" class="photo-btn active">Left</button>
+        <button id="photo-right" class="photo-btn">Right</button>
+        <button id="photo-top" class="photo-btn">Top</button>
+        <button id="photo-none" class="photo-btn">None</button>
+      </div>
+      <label style="margin-top:0.4rem;">Density</label>
+      <select id="density-select" class="density-select">
+        <option value="normal">Normal</option>
+        <option value="compact">Compact</option>
+        <option value="airy">Airy</option>
+      </select>
+      <label style="margin-top:0.4rem;">Font size (pt)</label>
+      <input id="font-size-input" type="number" value="10.2" min="8" max="13" step="0.1" style="width:80px;">
+    </div>
 
-      <div class="card">
-        <div class="section-title" style="margin-bottom:0.5rem;">Try an example</div>
-        <div id="example-chips" class="example-chips">
-          <button class="example-chip" data-example="cv-sidebar-lime">Sidebar · Lime</button>
-          <button class="example-chip" data-example="cv-serif-dark">Serif · Dark titles</button>
-          <button class="example-chip" data-example="cv-ats-dense">ATS · Dense</button>
-        </div>
-        <p style="font-size:0.75rem;color:var(--app-muted);margin-top:0.5rem;">Your draft autosaves in this browser.</p>
-      </div>
-    </aside>
+    <!-- Step 5: Export -->
+    <div class="step export-step">
+      <div class="step-title">5 · Export</div>
+      <button id="export-btn" class="btn btn-primary btn-lg">Export → PDF</button>
+      <p class="step-hint">Opens your print dialog. Choose “Save as PDF”, margins None, background graphics on.</p>
+    </div>
 
-    <!-- Preview -->
-    <section class="app-preview">
-      <div class="preview-wrap">
-        <div id="preview-canvas" class="preview-canvas"></div>
-        <div class="preview-zoom">
-          <label>Zoom</label>
-          <input id="zoom-input" type="range" min="0.4" max="1.4" step="0.1" value="1">
-        </div>
+    <div class="panel-footer">
+      Examples:
+      <div id="example-chips" class="example-chips">
+        <button class="example-chip" data-example="cv-sidebar-lime">Sidebar · Lime</button>
+        <button class="example-chip" data-example="cv-serif-dark">Serif · Dark titles</button>
+        <button class="example-chip" data-example="cv-ats-dense">ATS · Dense</button>
       </div>
-    </section>
-  </div>
+      <p class="step-hint" style="margin-top:0.5rem;">Draft autosaves in this browser.</p>
+    </div>
+  </aside>
+
+  <!-- Right panel: live preview -->
+  <section class="app-preview">
+    <div class="preview-header">
+      <span class="preview-label">Live preview</span>
+      <div class="preview-zoom">
+        <label>Zoom</label>
+        <input id="zoom-input" type="range" min="0.4" max="1.4" step="0.1" value="1">
+      </div>
+    </div>
+    <div id="preview-canvas" class="preview-canvas"></div>
+  </section>
 
   <!-- Footer -->
   <footer class="app-footer">
@@ -125,7 +135,6 @@
       Created by <strong>Daniel T.</strong> for free use.
       <a href="tos.html">ToS</a>
       <a href="privacy.html">Privacy</a>
-      <a href="how.html">How does this work?</a>
     </div>
     <div class="footer-credit">
       <a href="https://danieltuma.work" target="_blank" rel="noopener" style="color:var(--app-muted);text-decoration:none;">← Back to danieltuma.work</a>
