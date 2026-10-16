@@ -1,0 +1,48 @@
+{
+  "$schema": "./cv.schema.json",
+  "version": 1,
+  "theme": {
+    "paper": "A4",
+    "fonts": { "heading": "EB Garamond", "body": "Source Serif", "headingWeight": 700 },
+    "colors": { "accent": "#FFD60A", "accent2": "#B4F204", "text": "#0F172A", "muted": "#64748B", "panel": "#F8FAFC", "rule": "#E2E8F0", "page": "#FFFFFF" },
+    "layout": { "photo": "right", "columns": 28, "density": "airy", "fontSize": 11, "sideStyle": "plain" },
+    "decor": { "sectionStyle": "bar", "skills": "chip", "photoShape": "rounded", "pageNumbers": false }
+  },
+  "labels": { "present": "S dosud", "titles": { "experience": "Praxe", "education": "Vzdělání", "skills": "Dovednosti", "projects": "Projekty", "certifications": "Certifikace", "languages": "Jazyky", "interests": "Zájmy" } },
+  "basics": {
+    "name": "Eliška Nováková",
+    "headline": "Product Designer",
+    "summary": "Designérka digitálních produktů se zaměřením na dostupnost a čistý vizuální styl. Vytváří rozhraní, která jsou radost používat.",
+    "location": "Praha, Česká republika",
+    "photo": "assets/eliska.jpg"
+  },
+  "contact": [
+    { "icon": "email", "label": "eliska@example.cz", "href": "mailto:eliska@example.cz" },
+    { "icon": "web", "label": "portfolio.cz", "href": "https://portfolio.cz" }
+  ],
+  "sections": [
+    { "kind": "experience", "title": "Praxe", "column": "main", "items": [
+      { "role": "Senior Product Designer", "org": "Užitečná aplikace a.s.", "location": "Praha", "start": "2022-01", "end": "Present", "highlights": ["Navrhla design systém pro bankovní aplikaci použitý 200k+ klienty", "Vedla výzkum uživatelů a testování prototypů"], "tech": ["Figma", "User Research", "Design Systems", "Accessibility"] },
+      { "role": "UI Designer", "org": "Kreativní studio", "location": "Praha", "start": "2019-05", "end": "2021-12", "highlights": ["Vytvořila vizuální styly pro 10+ mobilních aplikací"], "tech": ["Figma", "Illustrator", "Branding"] }
+    ]},
+    { "kind": "education", "title": "Vzdělání", "column": "side", "items": [
+      { "role": "Bakalářský studijní program Design", "org": "Vysoká škola umělecko-průmyslová v Praze", "location": "Praha", "start": "2015-09", "end": "2019-06" }
+    ]},
+    { "kind": "skills", "title": "Dovednosti", "column": "side", "items": [
+      { "role": "UI Design", "level": 92 },
+      { "role": "UX Research", "level": 85 },
+      { "role": "Figma", "level": 95 },
+      { "role": "Accessibility (WCAG)", "level": 80 },
+      { "role": "Prototyping", "level": 88 }
+    ]},
+    { "kind": "languages", "title": "Jazyky", "column": "side", "items": [
+      { "role": "Čeština", "label": "Rodný jazyk", "level": 100 },
+      { "role": "Angličtina", "label": "Pokročilá", "level": 90 }
+    ]},
+    { "kind": "interests", "title": "Zájmy", "column": "side", "items": [
+      { "role": "Kalligrafie" },
+      { "role": "Keramika" },
+      { "role": "Typografie" }
+    ]}
+  ]
+}

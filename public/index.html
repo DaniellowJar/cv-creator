@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Creator — JSON to PDF, client-side</title>
+  <meta name="description" content="Paste an agent-generated CV JSON, upload your photo, export a vector PDF. Nothing leaves your browser.">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/cv.css">
+  <link rel="stylesheet" href="css/print.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23B4F204'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="app-brand">CV<span class="accent">Creator</span></div>
+      <div class="app-desc">JSON → PDF in your browser</div>
+    </div>
+    <div class="header-center">
+      <a href="how.html" class="btn btn-ghost btn-sm">How it works</a>
+      <button id="dark-toggle" class="btn btn-ghost btn-sm">Dark theme</button>
+    </div>
+    <div class="header-right">
+      <a href="https://danieltuma.work" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">← danieltuma.work</a>
+      <button id="export-btn" class="btn btn-primary">Export → PDF</button>
+    </div>
+  </header>
+
+  <div class="app-main">
+    <!-- Sidebar: input + controls -->
+    <aside class="app-sidebar">
+      <div class="section-title">1 · Paste CV JSON</div>
+      <div class="json-editor">
+        <textarea id="json-input" placeholder="Paste your agent-generated CV JSON here…"></textarea>
+      </div>
+      <div id="validation" class="validation" style="min-height:1.2em;"></div>
+
+      <div class="editor-actions">
+        <button id="copy-json" class="btn btn-ghost btn-sm">Copy JSON</button>
+        <button id="clear-btn" class="btn btn-ghost btn-sm">Clear all</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:0.6rem;">2 · Upload assets</div>
+        <div id="drop-zone" class="drop-zone">
+          <p>Drop photo here</p>
+          <small>JPG / PNG — stays in this browser only</small>
+          <input type="file" id="file-input" accept="image/*" multiple style="display:none;">
+        </div>
+        <div id="asset-list" class="asset-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:0.6rem;">3 · Quick theme tweaks</div>
+        <div class="color-pick" style="margin-bottom:0.5rem;">
+          <label>Accent 1 (lime)</label>
+          <input id="theme-accent" type="color" value="#B4F204">
+          <label>Accent 2 (sun)</label>
+          <input id="theme-accent2" type="color" value="#FFD60A">
+        </div>
+        <div class="color-pick" style="margin-bottom:0.5rem;">
+          <label>Text</label>
+          <input id="theme-text" type="color" value="#1F2937">
+          <label>Muted</label>
+          <input id="theme-muted" type="color" value="#6B7280">
+        </div>
+        <div class="color-pick" style="margin-bottom:0.5rem;">
+          <label>Panel</label>
+          <input id="theme-panel" type="color" value="#FFFFFF">
+          <label>Rule</label>
+          <input id="theme-rule" type="color" value="#E5E7EB">
+        </div>
+        <div class="color-pick" style="margin-bottom:0.5rem;">
+          <label>Page</label>
+          <input id="theme-page" type="color" value="#FAFAF7">
+        </div>
+        <label>Photo position</label>
+        <div class="photo-options">
+          <button id="photo-left" class="photo-btn active">Left</button>
+          <button id="photo-right" class="photo-btn">Right</button>
+          <button id="photo-top" class="photo-btn">Top</button>
+          <button id="photo-none" class="photo-btn">None</button>
+        </div>
+        <label style="margin-top:0.4rem;">Density</label>
+        <select id="density-select" class="density-select">
+          <option value="normal">Normal</option>
+          <option value="compact">Compact</option>
+          <option value="airy">Airy</option>
+        </select>
+        <label style="margin-top:0.4rem;">Font size (pt)</label>
+        <input id="font-size-input" type="number" value="10.2" min="8" max="13" step="0.1" style="width:80px;">
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-bottom:0.5rem;">Try an example</div>
+        <div id="example-chips" class="example-chips">
+          <button class="example-chip" data-example="cv-sidebar-lime">Sidebar · Lime</button>
+          <button class="example-chip" data-example="cv-serif-dark">Serif · Dark titles</button>
+          <button class="example-chip" data-example="cv-ats-dense">ATS · Dense</button>
+        </div>
+        <p style="font-size:0.75rem;color:var(--app-muted);margin-top:0.5rem;">Your draft autosaves in this browser.</p>
+      </div>
+    </aside>
+
+    <!-- Preview -->
+    <section class="app-preview">
+      <div class="preview-wrap">
+        <div id="preview-canvas" class="preview-canvas"></div>
+        <div class="preview-zoom">
+          <label>Zoom</label>
+          <input id="zoom-input" type="range" min="0.4" max="1.4" step="0.1" value="1">
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-left">
+      Created by <strong>Daniel T.</strong> for free use.
+      <a href="tos.html">ToS</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="how.html">How does this work?</a>
+    </div>
+    <div class="footer-credit">
+      <a href="https://danieltuma.work" target="_blank" rel="noopener" style="color:var(--app-muted);text-decoration:none;">← Back to danieltuma.work</a>
+    </div>
+  </footer>
+
+</div>
+
+<script src="js/validate.js"></script>
+<script src="js/assets.js"></script>
+<script src="js/sections.js"></script>
+<script src="js/render.js"></script>
+<script src="js/confetti.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+/* ==========================================================================
+   CV Creator — base.css
+   Design system variables, reset, fonts, utilities
+   ========================================================================== */
+
+/* --- CSS custom properties (theme defaults, overridden by JS) --- */
+:root {
+  --cv-paper: A4;
+  --cv-accent: #B4F204;
+  --cv-accent2: #FFD60A;
+  --cv-text: #1F2937;
+  --cv-muted: #6B7280;
+  --cv-panel: #FFFFFF;
+  --cv-rule: #E5E7EB;
+  --cv-page: #FAFAF7;
+  --cv-font-heading: 'Inter', system-ui, sans-serif;
+  --cv-font-body: 'Inter', system-ui, sans-serif;
+  --cv-heading-weight: 600;
+  --cv-font-size: 10.2pt;
+  --cv-density: normal;
+  --cv-photo: left;
+  --cv-columns: 30;
+  --cv-side-style: panel;
+  --cv-section-style: rule;
+  --cv-skills: bar;
+  --cv-photo-shape: circle;
+  --cv-page-numbers: true;
+
+  --app-bg: #FAFAF7;
+  --app-surface: #FFFFFF;
+  --app-border: #E5E7EB;
+  --app-text: #1F2937;
+  --app-muted: #6B7280;
+  --app-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.03);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { height: 100%; }
+body {
+  height: 100%;
+  font-family: var(--cv-font-body);
+  font-size: 14px;
+  color: var(--app-text);
+  background: var(--app-bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Font loading --- */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback to Google Fonts if local files missing */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;600&family=Source+Serif+Pro:wght@400;600;700&display=swap');
+
+/* --- Layout shell --- */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-header {
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.app-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.app-sidebar {
+  width: 380px;
+  background: var(--app-surface);
+  border-right: 1px solid var(--app-border);
+  overflow-y: auto;
+  padding: 1.25rem;
+  flex-shrink: 0;
+}
+
+.app-preview {
+  flex: 1;
+  background: #FFFFFF;
+  overflow: auto;
+  position: relative;
+  padding: 1rem;
+}
+
+.app-footer {
+  background: var(--app-surface);
+  border-top: 1px solid var(--app-border);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--app-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4 {
+  font-family: var(--cv-font-heading);
+  font-weight: var(--cv-heading-weight);
+  color: var(--cv-text);
+  line-height: 1.2;
+}
+
+.app-brand { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em; }
+.app-brand .accent { color: var(--cv-accent); }
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--app-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cv-accent), var(--cv-accent2));
+  color: #141414;
+  box-shadow: 0 4px 14px 0 rgb(180 242 4 / 0.35);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgb(180 242 4 / 0.45);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
+}
+.btn-ghost:hover { background: #F3F4F6; }
+
+.btn-sm { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
+
+/* --- Form controls --- */
+label { font-size: 0.85rem; font-weight: 600; color: var(--app-muted); display: block; margin-bottom: 0.4rem; }
+input, select, textarea {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: var(--app-text);
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--cv-accent);
+  ring-color: var(--cv-accent);
+}
+textarea { resize: vertical; min-height: 120px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.form-row { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
+.field-group { margin-bottom: 0.875rem; }
+.field-group.full { grid-column: 1 / -1; }
+
+/* --- Badge / status --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: #F3F4F6;
+  color: var(--app-muted);
+}
+.badge.ok { background: #DCFCE7; color: #15803d; }
+.badge.bad { background: #FEE2E2; color: #B91C1C; }
+
+/* --- Card --- */
+.card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--app-shadow);
+}
+
+/* --- Link list --- */
+.link-list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.link-list a {
+  font-size: 0.85rem;
+  color: var(--app-muted);
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+.link-list a:hover { color: var(--cv-accent); background: #F3F4F6; }
+
+/* --- Hidden --- */
+.hidden { display: none !important; }
+
+/* --- Animations --- */
+@keyframes confetti-burst {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(120vh) rotate(720deg) scale(0); opacity: 0; }
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 8px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confetti-burst 1.2s ease-out forwards;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .app-main { flex-direction: column; }
+  .app-sidebar { width: 100%; max-height: 45vh; border-right: none; border-bottom: 1px solid var(--app-border); }
+}

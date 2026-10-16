@@ -1,0 +1,60 @@
+{
+  "$schema": "./cv.schema.json",
+  "version": 1,
+  "meta": { "generatedBy": "example-agent", "generatedAt": "2026-10-15T18:00:00Z" },
+  "theme": {
+    "paper": "A4",
+    "fonts": { "heading": "Fraunces", "body": "Inter", "headingWeight": 600 },
+    "colors": { "accent": "#B4F204", "accent2": "#FFD60A", "text": "#1F2937", "muted": "#6B7280", "panel": "#FFFFFF", "rule": "#E5E7EB", "page": "#FAFAF7" },
+    "layout": { "photo": "left", "columns": 30, "density": "normal", "fontSize": 10.2, "sideStyle": "panel" },
+    "decor": { "sectionStyle": "rule", "skills": "bar", "photoShape": "circle", "pageNumbers": true }
+  },
+  "labels": { "present": "Present", "titles": { "experience": "Experience", "education": "Education", "skills": "Skills", "projects": "Projects", "certifications": "Certifications", "languages": "Languages", "interests": "Interests" } },
+  "basics": {
+    "name": "Daniel T.",
+    "headline": "Software Engineer & Systems Designer",
+    "summary": "Builder of web apps, server infrastructure, and developer tools. Comfortable from TypeScript frontend to Linux homelab. Open source contributor and AI agent wrangler.",
+    "location": "Brno, Czechia",
+    "photo": "assets/me.jpg"
+  },
+  "contact": [
+    { "icon": "email", "label": "daniel@example.cz", "href": "mailto:daniel@example.cz" },
+    { "icon": "phone", "label": "+420 777 123 456", "href": "tel:+420777123456" },
+    { "icon": "location", "label": "Brno, Czechia", "href": "https://maps.google.com" },
+    { "icon": "github", "label": "github.com/danieltuma", "href": "https://github.com/danieltuma" },
+    { "icon": "linkedin", "label": "linkedin.com/in/danieltuma", "href": "https://linkedin.com/in/danieltuma" },
+    { "icon": "web", "label": "danieltuma.work", "href": "https://danieltuma.work" }
+  ],
+  "sections": [
+    { "kind": "experience", "title": "Experience", "column": "main", "items": [
+      { "role": "Senior Software Engineer", "org": "TechFlow s.r.o.", "location": "Brno, Czechia", "start": "2021-06", "end": "Present", "highlights": ["Designed and shipped customer-facing React applications used by 50k+ monthly users", "Migrated legacy monolith to event-driven micro-services on AWS", "Reduced page load times by 60% through Core Web Vitals optimization"], "tech": ["React", "TypeScript", "Node.js", "AWS", "PostgreSQL"] },
+      { "role": "Full-Stack Developer", "org": "WebCraft Agency", "location": "Remote", "start": "2018-03", "end": "2021-05", "highlights": ["Built 15+ client websites and e-commerce platforms", "Implemented CI/CD pipelines cutting deploy time from 45 min to 4 min"], "tech": ["PHP", "Laravel", "Vue.js", "MySQL", "Docker"] }
+    ]},
+    { "kind": "education", "title": "Education", "column": "side", "items": [
+      { "role": "Bachelor of Computer Science", "org": "Brno University of Technology", "location": "Brno, Czechia", "start": "2014-09", "end": "2018-06" }
+    ]},
+    { "kind": "skills", "title": "Skills", "column": "side", "items": [
+      { "role": "TypeScript", "level": 90 },
+      { "role": "React", "level": 88 },
+      { "role": "Node.js", "level": 85 },
+      { "role": "Python", "level": 80 },
+      { "role": "Linux / Bash", "level": 75 },
+      { "role": "PostgreSQL", "level": 70 },
+      { "role": "AWS", "level": 65 }
+    ]},
+    { "kind": "projects", "title": "Projects", "column": "main", "items": [
+      { "role": "CV Creator", "org": "Personal", "start": "2026-09", "end": "Present", "highlights": ["JSON-driven CV generator producing vector PDFs entirely client-side", "Agent-friendly prompt kit for automated CV creation"], "tech": ["JavaScript", "CSS", "HTML"] },
+      { "role": "Homelab Automation", "org": "Personal", "start": "2024-01", "end": "Present", "highlights": ["NetBird VPN overlay across 4 hosts", "Self-hosted media and automation stack"], "tech": ["Linux", "LXC", "systemd", "NetBird"] }
+    ]},
+    { "kind": "languages", "title": "Languages", "column": "side", "items": [
+      { "role": "Czech", "label": "Native", "level": 100 },
+      { "role": "English", "label": "Fluent", "level": 95 }
+    ]},
+    { "kind": "interests", "title": "Interests", "column": "side", "items": [
+      { "role": "Hiking" },
+      { "role": "Photography" },
+      { "role": "AI agents" },
+      { "role": "Home networking" }
+    ]}
+  ]
+}

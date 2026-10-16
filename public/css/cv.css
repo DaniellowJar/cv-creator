@@ -1,0 +1,284 @@
+/* ==========================================================================
+   CV Creator — cv.css
+   Rendered CV layout from the JSON contract. Driven by CSS custom properties
+   injected by js/render.js from theme.colors, theme.fonts, theme.layout, theme.decor.
+   ========================================================================== */
+
+.cv-sheet {
+  width: 210mm;            /* A4 width */
+  height: 297mm;           /* A4 height */
+  margin: 0 auto;
+  background: var(--cv-page);
+  color: var(--cv-text);
+  font-family: var(--cv-font-body);
+  font-size: var(--cv-font-size);
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+.cv-sheet.letter {
+  width: 215.9mm;
+  height: 279.4mm;
+}
+.cv-sheet:last-child { page-break-after: auto; }
+
+/* Hide chrome when previewing but keep printable */
+.cv-sheet::after {
+  content: attr(data-page);
+  position: absolute;
+  bottom: 8mm;
+  right: 10mm;
+  font-size: 7pt;
+  color: var(--cv-muted);
+  opacity: var(--cv-page-numbers);
+}
+
+/* Page wrapper inside sheet */
+.cv-page {
+  padding: 14mm 10mm 16mm 10mm;
+  height: 100%;
+  position: relative;
+}
+
+/* Header block */
+.cv-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10mm;
+  margin-bottom: 8mm;
+  position: relative;
+}
+
+.cv-photo {
+  width: 30mm;
+  height: 30mm;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid var(--cv-rule);
+  background: var(--cv-panel);
+}
+.cv-photo.circle { border-radius: 50%; }
+.cv-photo.rounded { border-radius: 8px; }
+.cv-photo.square { border-radius: 0; }
+
+.cv-photo.left { margin-right: auto; }
+.cv-photo.right { margin-left: auto; }
+.cv-photo.top { width: 100%; height: auto; max-height: 35mm; margin-bottom: 4mm; border-radius: 8px; }
+
+.cv-name { font-family: var(--cv-font-heading); font-size: 19pt; font-weight: var(--cv-heading-weight); color: var(--cv-text); line-height: 1.1; margin-bottom: 1mm; }
+.cv-headline { font-size: 10pt; color: var(--cv-accent); font-weight: 600; letter-spacing: 0.03em; margin-bottom: 2mm; text-transform: uppercase; letter-spacing: 0.05em; }
+.cv-summary { font-size: 8.5pt; color: var(--cv-text); line-height: 1.45; margin-bottom: 3mm; max-width: 120mm; }
+.cv-location { font-size: 8pt; color: var(--cv-muted); margin-bottom: 3mm; display: flex; align-items: center; gap: 2mm; }
+
+.cv-contact {
+  margin-bottom: 6mm;
+  font-size: 7.5pt;
+  color: var(--cv-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4mm 6mm;
+}
+.cv-contact .sep { color: var(--cv-rule); }
+
+/* Two-column layout */
+.cv-columns {
+  display: flex;
+  gap: 8mm;
+  flex-wrap: wrap;
+}
+.cv-main { flex: 1; min-width: 0; }
+.cv-side {
+  width: var(--cv-columns);
+  min-width: 0;
+}
+.cv-single .cv-main { width: 100%; }
+
+/* Sections */
+.cv-section {
+  margin-bottom: 7mm;
+  break-inside: avoid;
+}
+.cv-section:last-child { margin-bottom: 0; }
+
+.cv-section-title {
+  font-family: var(--cv-font-heading);
+  font-size: 10pt;
+  font-weight: var(--cv-heading-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cv-text);
+  margin-bottom: 3mm;
+  padding-bottom: 1.5mm;
+  border-bottom: 1.5px solid var(--cv-accent);
+  position: relative;
+}
+
+.cv-section-title.rule-style { border-color: var(--cv-rule); }
+.cv-section-title.bar-style {
+  border: none;
+  padding-left: 3mm;
+  border-left: 3px solid var(--cv-accent);
+}
+.cv-section-title.none-style { border: none; padding-bottom: 0; margin-bottom: 2mm; }
+
+/* Item base */
+.cv-item {
+  margin-bottom: 4mm;
+  break-inside: avoid;
+}
+.cv-item:last-child { margin-bottom: 0; }
+
+.cv-item-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1mm; }
+.cv-item-role { font-weight: 600; color: var(--cv-text); font-size: 9pt; }
+.cv-item-org { color: var(--cv-accent); font-weight: 600; font-size: 8.5pt; }
+.cv-item-dates { font-size: 7.5pt; color: var(--cv-muted); white-space: nowrap; }
+.cv-item-location { font-size: 7.5pt; color: var(--cv-muted); margin-left: 2mm; }
+
+.cv-item-desc { font-size: 8pt; color: var(--cv-text); line-height: 1.4; margin-bottom: 2mm; }
+.cv-item-highlights { list-style: none; margin-left: 0; }
+.cv-item-highlights li {
+  font-size: 8pt;
+  color: var(--cv-text);
+  line-height: 1.4;
+  margin-bottom: 1mm;
+  padding-left: 5mm;
+  position: relative;
+}
+.cv-item-highlights li::before {
+  content: '▹';
+  position: absolute;
+  left: 0;
+  color: var(--cv-accent);
+  font-size: 7pt;
+}
+
+.cv-item-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2mm;
+  margin-top: 1.5mm;
+}
+.cv-item-tech .chip {
+  font-size: 6.8pt;
+  padding: 0.6mm 2mm;
+  background: #F3F4F6;
+  color: var(--cv-muted);
+  border-radius: 3mm;
+  border: 0.5px solid var(--cv-rule);
+}
+
+/* Skills */
+.cv-skills-list { list-style: none; padding: 0; }
+.cv-skills-list li { margin-bottom: 2.5mm; font-size: 8pt; color: var(--cv-text); }
+.cv-skills-list li .skill-name { font-weight: 600; }
+.cv-skills-list li .skill-bar {
+  height: 2mm;
+  background: var(--cv-rule);
+  border-radius: 1mm;
+  margin-top: 1mm;
+  overflow: hidden;
+}
+.cv-skills-list li .skill-fill {
+  height: 100%;
+  background: var(--cv-accent);
+  width: 0%;
+  transition: width 0.6s ease;
+}
+.cv-skills-list li .skill-label {
+  font-size: 6.5pt;
+  color: var(--cv-muted);
+  margin-top: 0.5mm;
+}
+
+.cv-skills-dots li {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  margin-bottom: 2mm;
+}
+.cv-skills-dots .dot {
+  width: 2.5mm; height: 2.5mm;
+  border-radius: 50%;
+  background: var(--cv-accent);
+  flex-shrink: 0;
+}
+.cv-skills-dots .skill-label { font-size: 8pt; color: var(--cv-text); }
+
+.cv-skills-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2mm;
+  margin-top: 1mm;
+}
+.cv-skills-chips .chip {
+  font-size: 7pt;
+  padding: 1mm 2.5mm;
+  background: #F3F4F6;
+  color: var(--cv-text);
+  border-radius: 3mm;
+  border: 0.5px solid var(--cv-rule);
+}
+
+.cv-skills-plain li {
+  display: inline-block;
+  margin: 0 2mm 2mm 0;
+  font-size: 8pt;
+  color: var(--cv-text);
+}
+
+/* Education / certifications compact */
+.cv-item-meta { font-size: 7.5pt; color: var(--cv-muted); margin-bottom: 1mm; }
+
+/* Text section */
+.cv-text-block { font-size: 8pt; line-height: 1.5; color: var(--cv-text); }
+
+/* Side panel styling */
+.cv-side .cv-section { margin-bottom: 5mm; }
+.cv-side .cv-section-title { font-size: 9pt; margin-bottom: 2.5mm; }
+.cv-side .cv-item { margin-bottom: 3mm; font-size: 7.5pt; }
+.cv-side .cv-item-role { font-weight: 600; font-size: 8pt; }
+.cv-side .cv-item-dates { font-size: 6.8pt; }
+.cv-side .cv-item-location { font-size: 6.8pt; }
+
+/* Density adjustments */
+.cv-density-compact .cv-item { margin-bottom: 2.5mm; font-size: 7.5pt; }
+.cv-density-compact .cv-section { margin-bottom: 5mm; }
+.cv-density-compact .cv-summary { font-size: 7.8pt; margin-bottom: 2mm; }
+.cv-density-compact .cv-item-highlights li { font-size: 7.5pt; margin-bottom: 0.5mm; }
+
+.cv-density-airy .cv-item { margin-bottom: 6mm; font-size: 9pt; }
+.cv-density-airy .cv-section { margin-bottom: 9mm; }
+.cv-density-airy .cv-summary { font-size: 9.5pt; margin-bottom: 4mm; }
+
+/* Dark mode */
+body.cv-dark .cv-sheet { background: #0F172A; color: #F8FAFC; }
+body.cv-dark .cv-name { color: #F8FAFC; }
+body.cv-dark .cv-headline { color: var(--cv-accent2); }
+body.cv-dark .cv-summary { color: #CBD5E1; }
+body.cv-dark .cv-item-role { color: #F8FAFC; }
+body.cv-dark .cv-item-dates { color: #94A3B8; }
+body.cv-dark .cv-item-location { color: #94A3B8; }
+body.cv-dark .cv-item-desc { color: #CBD5E1; }
+body.cv-dark .cv-item-highlights li { color: #CBD5E1; }
+body.cv-dark .cv-contact { color: #94A3B8; }
+body.cv-dark .cv-contact .sep { color: #334155; }
+body.cv-dark .cv-section-title { color: #F8FAFC; }
+body.cv-dark .cv-section-title.rule-style { border-color: #334155; }
+body.cv-dark .cv-photo { border-color: #334155; }
+
+/* Preview-specific tweaks */
+.preview-mode .cv-sheet {
+  width: 100%;
+  max-width: 210mm;
+  height: auto;
+  min-height: 297mm;
+  margin: 0 auto 1rem auto;
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--app-shadow);
+  page-break-after: avoid;
+}
+.preview-mode .cv-sheet::after { display: none; }
+.preview-mode .cv-sheet.letter { max-width: 215.9mm; }

@@ -1,0 +1,54 @@
+/* ==========================================================================
+   CV Creator — print.css
+   Print rules: vector PDF output, no chrome
+   ========================================================================== */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+@page :first { margin: 0; }
+
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Hide app chrome */
+  .app-header, .app-sidebar, .app-footer, .preview-zoom, .no-print {
+    display: none !important;
+  }
+
+  .app-main { overflow: visible; height: auto; }
+  .app-preview { padding: 0; background: #FFFFFF; overflow: visible; }
+
+  /* Sheets become real pages */
+  .cv-sheet {
+    width: 100%;
+    height: auto;
+    min-height: 297mm;
+    margin: 0;
+    page-break-after: always;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: var(--cv-page) !important;
+  }
+  .cv-sheet:last-child { page-break-after: auto; }
+  .cv-sheet::after { display: none; }
+
+  /* Ensure background colors print */
+  .cv-sheet { background: var(--cv-page) !important; }
+  .cv-page { background: var(--cv-page) !important; }
+
+  /* Prevent breaking inside items/sections */
+  .cv-section, .cv-item { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Remove link underlines but keep URLs subtle */
+  a[href] { text-decoration: none; color: inherit; }
+
+  /* Force fonts to render (no fallback flicker) */
+  body { font-family: var(--cv-font-body); }
+}
+
+@media screen {
+  .print-only { display: none; }
+}

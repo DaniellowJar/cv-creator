@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How does this work? — CV Creator</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body>
+
+<div class="app">
+  <header class="app-header">
+    <div class="header-left">
+      <div class="app-brand">CV<span class="accent">Creator</span></div>
+      <div class="app-desc">How it works</div>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="btn btn-ghost btn-sm">← Back to creator</a>
+      <a href="https://danieltuma.work" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">danieltuma.work</a>
+    </div>
+  </header>
+
+  <div class="app-main" style="padding: 2rem;">
+    <div style="max-width:720px;margin:0 auto;">
+      <h1 style="font-family:var(--cv-font-heading);font-size:1.75rem;margin-bottom:1rem;color:var(--cv-text);">How does this work?</h1>
+
+      <ol style="line-height:1.7;color:var(--app-text);margin-bottom:2rem;">
+        <li><strong>Copy the prompt kit.</strong> Open <a href="PROMPT.md" target="_blank">PROMPT.md</a>, copy everything, and paste it into any LLM agent (the one you already use).</li>
+        <li><strong>Give it your CV.</strong> Paste your existing CV text, a LinkedIn dump, or just notes — plus your preferences (colors, photo side, font, paper size).</li>
+        <li><strong>Get JSON back.</strong> The agent replies with a single JSON object matching <code>cv.schema.json</code>.</li>
+        <li><strong>Paste it here.</strong> Drop the JSON into the left box on the creator. Upload your photo if you want one.</li>
+        <li><strong>Preview.</strong> The CV renders live in the center — real A4/Letter pages with real page breaks.</li>
+        <li><strong>Export.</strong> Click Export. Your browser's print dialog opens. Choose "Save as PDF", margins None, background graphics on. Download your vector PDF.</li>
+      </ol>
+
+      <div class="card">
+        <h2 style="font-family:var(--cv-font-heading);font-size:1.1rem;margin-bottom:0.75rem;color:var(--cv-text);">What the JSON controls</h2>
+        <ul style="line-height:1.6;color:var(--app-text);margin-bottom:1rem;">
+          <li><strong>Theme:</strong> accent colors (default lime green + sun yellow), heading/body fonts, font size, density (compact/normal/airy)</li>
+          <li><strong>Layout:</strong> photo left/right/top/none, side-column width, single or two-column</li>
+          <li><strong>Sections:</strong> experience, education, skills, projects, certifications, languages, interests — plus free-form text blocks</li>
+          <li><strong>Labels:</strong> translate section titles and "Present" into any language (Czech, German, Spanish…)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2 style="font-family:var(--cv-font-heading);font-size:1.1rem;margin-bottom:0.75rem;color:var(--cv-text);">Privacy</h2>
+        <p style="color:var(--app-text);line-height:1.6;">Everything happens in your browser. The JSON, your photo, and the rendered CV never leave your device. No account, no server storage, no tracking. When you close the tab, it's gone (except the draft autosave in your browser's local storage).</p>
+      </div>
+
+      <p style="margin-top:2rem;color:var(--app-muted);font-size:0.85rem;">
+        Created by <strong>Daniel T.</strong> for free use. · <a href="https://danieltuma.work" target="_blank" rel="noopener">danieltuma.work</a>
+      </p>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-left">
+      Created by <strong>Daniel T.</strong> for free use.
+      <a href="tos.html">ToS</a> · <a href="privacy.html">Privacy</a>
+    </div>
+    <div class="footer-credit">
+      <a href="index.html" style="color:var(--app-muted);text-decoration:none;">← Back to creator</a>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

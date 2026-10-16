@@ -1,0 +1,48 @@
+{
+  "$schema": "./cv.schema.json",
+  "version": 1,
+  "theme": {
+    "paper": "Letter",
+    "fonts": { "heading": "Inter", "body": "Inter", "headingWeight": 700 },
+    "colors": { "accent": "#0EA5E9", "accent2": "#22D3EE", "text": "#111827", "muted": "#4B5563", "panel": "#FFFFFF", "rule": "#D1D5DB", "page": "#FFFFFF" },
+    "layout": { "photo": "none", "columns": 0, "density": "compact", "fontSize": 9.5, "sideStyle": "rule" },
+    "decor": { "sectionStyle": "none", "skills": "plain", "photoShape": "square", "pageNumbers": true }
+  },
+  "labels": { "present": "Present", "titles": { "experience": "Experience", "education": "Education", "skills": "Skills", "projects": "Projects", "certifications": "Certifications", "languages": "Languages", "interests": "Interests" } },
+  "basics": {
+    "name": "Alex Rivera",
+    "headline": "DevOps Engineer | SRE | Cloud Infrastructure",
+    "summary": "Site reliability engineer focused on Kubernetes, Terraform, and observability. Reducing toil through automation.",
+    "location": "Austin, TX, USA"
+  },
+  "contact": [
+    { "icon": "email", "label": "alex@example.com", "href": "mailto:alex@example.com" },
+    { "icon": "phone", "label": "+1 555-0123", "href": "tel:+15550123" },
+    { "icon": "location", "label": "Austin, TX", "href": "https://maps.google.com" },
+    { "icon": "github", "label": "github.com/alexr", "href": "https://github.com/alexr" },
+    { "icon": "linkedin", "label": "linkedin.com/in/alexr", "href": "https://linkedin.com/in/alexr" }
+  ],
+  "sections": [
+    { "kind": "experience", "title": "Experience", "column": "main", "items": [
+      { "role": "Senior SRE", "org": "CloudScale Inc.", "location": "Austin, TX", "start": "2020-08", "end": "Present", "highlights": ["Managed Kubernetes clusters serving 500+ microservices", "Cut incident MTTR by 40% with improved alerting and runbooks"], "tech": ["Kubernetes", "Terraform", "Prometheus", "Grafana", "Go"] },
+      { "role": "DevOps Engineer", "org": "StartupXYZ", "location": "Remote", "start": "2017-02", "end": "2020-07", "highlights": ["Built CI/CD pipelines with GitHub Actions", "Migrated on-prem infrastructure to AWS"], "tech": ["AWS", "Docker", "Jenkins", "Bash"] }
+    ]},
+    { "kind": "education", "title": "Education", "column": "main", "items": [
+      { "role": "B.S. Computer Engineering", "org": "University of Texas at Austin", "location": "Austin, TX", "start": "2013-08", "end": "2017-05" }
+    ]},
+    { "kind": "skills", "title": "Skills", "column": "main", "items": [
+      { "role": "Kubernetes", "level": 90 },
+      { "role": "Terraform", "level": 85 },
+      { "role": "AWS", "level": 85 },
+      { "role": "Go", "level": 75 },
+      { "role": "Python", "level": 80 },
+      { "role": "Bash", "level": 85 },
+      { "role": "CI/CD", "level": 88 },
+      { "role": "Observability", "level": 82 }
+    ]},
+    { "kind": "certifications", "title": "Certifications", "column": "main", "items": [
+      { "role": "Certified Kubernetes Administrator (CKA)", "org": "Linux Foundation", "start": "2021", "end": "Present" },
+      { "role": "AWS Certified Solutions Architect", "org": "Amazon Web Services", "start": "2020", "end": "Present" }
+    ]}
+  ]
+}

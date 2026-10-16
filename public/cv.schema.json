@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://danieltuma.work/cv-creator/cv.schema.json",
+  "title": "CV Creator JSON Contract",
+  "version": 1,
+  "description": "Single source of truth for the CV Creator. Any agent can produce this JSON; the app renders it into a PDF. Copy PROMPT.md into your agent, give it your CV text, paste the result here.",
+  "type": "object",
+  "required": ["basics", "sections"],
+  "properties": {
+    "$schema": { "type": "string", "description": "Reference to this schema file" },
+    "version": { "type": "integer", "const": 1 },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "generatedBy": { "type": "string", "description": "Name of the agent that produced this JSON" },
+        "generatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "paper": { "type": "string", "enum": ["A4", "Letter"], "default": "A4" },
+        "fonts": {
+          "type": "object",
+          "properties": {
+            "heading": { "type": "string", "enum": ["Fraunces", "Inter", "JetBrains Mono", "EB Garamond", "Space Grotesk", "Source Serif"], "default": "Fraunces" },
+            "body": { "type": "string", "enum": ["Inter", "Fraunces", "JetBrains Mono", "EB Garamond", "Space Grotesk", "Source Serif"], "default": "Inter" },
+            "headingWeight": { "type": "integer", "minimum": 100, "maximum": 900, "default": 600 }
+          }
+        },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "accent": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#B4F204" },
+            "accent2": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#FFD60A" },
+            "text": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#1F2937" },
+            "muted": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#6B7280" },
+            "panel": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#FFFFFF" },
+            "rule": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#E5E7EB" },
+            "page": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "default": "#FAFAF7" }
+          }
+        },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "photo": { "type": "string", "enum": ["left", "right", "top", "none"], "default": "left" },
+            "columns": { "type": "integer", "minimum": 0, "maximum": 50, "default": 30 },
+            "density": { "type": "string", "enum": ["compact", "normal", "airy"], "default": "normal" },
+            "fontSize": { "type": "number", "minimum": 8, "maximum": 13, "default": 10.2 },
+            "sideStyle": { "type": "string", "enum": ["panel", "plain", "rule"], "default": "panel" }
+          }
+        },
+        "decor": {
+          "type": "object",
+          "properties": {
+            "sectionStyle": { "type": "string", "enum": ["rule", "bar", "none"], "default": "rule" },
+            "skills": { "type": "string", "enum": ["bar", "dots", "chip", "plain"], "default": "bar" },
+            "photoShape": { "type": "string", "enum": ["circle", "rounded", "square"], "default": "circle" },
+            "pageNumbers": { "type": "boolean", "default": true }
+          }
+        }
+      }
+    },
+    "labels": {
+      "type": "object",
+      "properties": {
+        "present": { "type": "string", "default": "Present" },
+        "titles": {
+          "type": "object",
+          "properties": {
+            "experience": { "type": "string", "default": "Experience" },
+            "education": { "type": "string", "default": "Education" },
+            "skills": { "type": "string", "default": "Skills" },
+            "projects": { "type": "string", "default": "Projects" },
+            "certifications": { "type": "string", "default": "Certifications" },
+            "languages": { "type": "string", "default": "Languages" },
+            "interests": { "type": "string", "default": "Interests" }
+          }
+        }
+      }
+    },
+    "basics": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "headline": { "type": "string" },
+        "photo": { "type": "string", "description": "Asset reference, e.g. 'assets/me.jpg'. Upload the file alongside the JSON." },
+        "summary": { "type": "string" },
+        "location": { "type": "string" },
+        "summaryShort": { "type": "string", "description": "One-line tagline shown under the name when headline is absent" }
+      }
+    },
+    "contact": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label"],
+        "properties": {
+          "icon": { "type": "string", "enum": ["email", "phone", "location", "linkedin", "github", "web", "twitter", "portfolio"] },
+          "label": { "type": "string" },
+          "href": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "items"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["experience", "education", "skills", "projects", "certifications", "languages", "interests", "text", "awards", "publications"] },
+          "title": { "type": "string", "description": "Override the default section title" },
+          "column": { "type": "string", "enum": ["main", "side", "full"], "default": "main" },
+          "items": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+          "html": { "type": "string", "description": "Only for kind 'text': raw HTML injected into the section" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "description": "Job title, degree, skill name, project name…" },
+        "org": { "type": "string", "description": "Company, school, cert issuer…" },
+        "location": { "type": "string" },
+        "start": { "type": "string", "description": "YYYY-MM or YYYY" },
+        "end": { "type": "string", "description": "YYYY-MM, YYYY, or 'Present'" },
+        "label": { "type": "string", "description": "For languages/skills: proficiency label" },
+        "level": { "type": "number", "minimum": 0, "maximum": 100, "description": "For skill bars: 0-100" },
+        "highlights": { "type": "array", "items": { "type": "string" } },
+        "tech": { "type": "array", "items": { "type": "string" }, "description": "Tech stack shown as chips under experience/projects" },
+        "summary": { "type": "string", "description": "One-paragraph blurb" },
+        "url": { "type": "string", "format": "uri" },
+        "icon": { "type": "string" },
+        "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$", "description": "Per-item accent override" }
+      },
+      "required": ["role"]
+    }
+  }
+}
